@@ -1,0 +1,54 @@
+<?php
+
+use Drupal\taxonomy\Entity\Term;
+
+/**
+ * Implements hook_install().
+ */
+function ubc_cwl_auth_install() {
+  $vocabulary = 'visibility';
+
+  // Add Generl and CWL to the Visibility vocab
+  $terms = [
+    'General',
+    'CWL',
+  ];
+
+  foreach ($terms as $name) {
+    // Check if a term with this name already exists in the vocabulary.
+    $existing_tids = \Drupal::entityQuery('taxonomy_term')
+      ->accessCheck(FALSE)
+      ->condition('vid', $vocabulary)
+      ->condition('name', $name)
+      ->execute();
+
+    if (empty($existing_tids)) {
+      $term = Term::create([
+        'name' => $name,
+        'vid' => $vocabulary,
+      ]);
+      $term->save();
+      $tid = $term->id();
+    }
+    $term_ids[$name] = $tid;
+  }
+
+  // Update permissions_by_term config.
+  $config = \Drupal::configFactory()->getEditable('permissions_by_term.settings');
+  $role_permissions = $config->get('role_permissions') ?: [];
+  $role_permissions['anonymous'][$term_ids['General']] = ['view'];
+  $role_permissions['authenticated'][$term_ids['General']] = ['view'];
+  $role_permissions['cwl'][$term_ids['CWL']] = ['view'];
+  $role_permissions['content_editor'][$term_ids['CWL']] = ['view'];
+  $role_permissions['administrator'][$term_ids['CWL']] = ['view'];
+  $config->set('role_permissions', $role_permissions)->save();
+
+  // Save to DB
+  $access_storage = \Drupal::service('permissions_by_term.access_storage');
+  $access_storage->addTermPermissionsByRoleIds(['anonymous'], $term_ids['General']);
+  $access_storage->addTermPermissionsByRoleIds(['authenticated'], $term_ids['General']);
+  $access_storage->addTermPermissionsByRoleIds(['cwl'], $term_ids['CWL']);
+  $access_storage->addTermPermissionsByRoleIds(['content_editor'], $term_ids['CWL']);
+  $access_storage->addTermPermissionsByRoleIds(['administrator'], $term_ids['CWL']);
+
+}

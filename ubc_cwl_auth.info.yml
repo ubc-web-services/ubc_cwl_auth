@@ -1,0 +1,11 @@
+name: UBC CWL Auth
+type: module
+description: 'Bridges Drupal authentication with UBC CWL'
+package: Custom
+version: 1.x
+core_version_requirement: ^10.1 || ^11
+dependencies:
+  - private_files_download_permission:pfdp
+  - entity_bundle_permissions:entity_bundle_permissions
+  - private_content:private_content
+  - permissions_by_term:permissions_by_term

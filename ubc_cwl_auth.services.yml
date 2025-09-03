@@ -1,0 +1,8 @@
+services:
+  ubc_cwl_auth.access_denied_redirect_subscriber:
+    class: Drupal\ubc_cwl_auth\EventSubscriber\AccessDeniedRedirectSubscriber
+    arguments:
+      - '@url_generator'
+      - '@current_user'
+    tags:
+      - { name: event_subscriber }
