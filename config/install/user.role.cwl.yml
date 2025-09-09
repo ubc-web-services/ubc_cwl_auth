@@ -1,13 +1,8 @@
 langcode: en
 status: true
-dependencies:
-  module:
-    - private_content
 _core:
   default_config_hash: Dl0dm2Fq7q19OMgW5Poy6CbBmyPayHWn0nzDbsVNqJI
 id: cwl
 label: CWL
 weight: -8
 is_admin: false
-permissions:
-  - 'access private content'

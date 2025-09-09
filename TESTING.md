@@ -20,7 +20,7 @@ Any additional modules required will be enabled as a dependency of the custom _*
 
 1. Install **ubc_cwl_auth** module, with dependencies, into a Drupal 10 site. Check for:
 - all dependent modules have been installed
-- the CWL role has been added, and has **access private content** permissions
+- the CWL role has been added
 - the Visibility taxonomy vocab has been added
 - the Visibility taxonomy vocab contains 2 terms called General and CWL
 - General has Allowed Roles of Anonymous and Authenticated
@@ -55,11 +55,6 @@ Any additional modules required will be enabled as a dependency of the custom _*
 
 **Method** : Create a content type and provide **Entity Bundle Permissions** to enable CWL users to access. Anonymous users should not be able to access; instead should see 403 page with message and CWL Login link.
 
-2. Using a content type that is accessible to anonymous users, configure a single node to be accessible by CWL users.
-
-**Dependencies** : private_content
-
-**Method** : Configure permissions for CWL users to **access private content**. Enable a single node to be private. Anonymous users should not be able to access; instead should see 403 page with message and CWL Login link.
 
 ### Views
 
@@ -69,11 +64,6 @@ Any additional modules required will be enabled as a dependency of the custom _*
 
 **Method** : Create View and test Anonymous and CWL users for access
 
-2. Create a View, and configure Access to be Permission: **access private content**
-
-**Dependencies** : private_content
-
-**Method** : Create View and test Anonymous and CWL users for access
 
 ### Private Files
 
