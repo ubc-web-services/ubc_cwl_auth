@@ -1,12 +1,51 @@
 <?php
 
 use Drupal\taxonomy\Entity\Term;
+use Drupal\taxonomy\Entity\Vocabulary;
 
 /**
  * Implements hook_install().
  */
 function ubc_cwl_auth_install() {
-  $vocabulary = 'visibility';
+  ubc_cwl_auth_createCwlRole();
+  ubc_cwl_auth_createVisibilityTaxonomy();
+}
+
+function ubc_cwl_auth_createCwlRole() {
+
+  // Check if the role already exists.
+  $role_name = 'cwl';
+  $role_exists = \Drupal\user\Entity\Role::load($role_name);
+
+  if (!$role_exists) {
+    // Create the new role.
+    $role = \Drupal\user\Entity\Role::create([
+      'id' => $role_name,
+      'label' => t('CWL'),
+      'is_admin' => FALSE,
+      'weight' => -8,
+    ]);
+    $role->save();
+
+    //$role->grantPermission('access content');
+    //$role->save();
+  }
+}
+
+function ubc_cwl_auth_createVisibilityTaxonomy() {
+
+  // Check if the vocabulary already exists.
+  $vocabulary_id = 'visibility';
+  $vocabulary = Vocabulary::load($vocabulary_id);
+
+  if (!$vocabulary) {
+    $vocabulary = Vocabulary::create([
+      'vid' => $vocabulary_id,
+      'name' => t('Visibility'),
+      'description' => t('Tag content as either CWL only or general access'),
+    ]);
+    $vocabulary->save();
+  }
 
   // Add Generl and CWL to the Visibility vocab
   $terms = [
@@ -18,14 +57,14 @@ function ubc_cwl_auth_install() {
     // Check if a term with this name already exists in the vocabulary.
     $existing_tids = \Drupal::entityQuery('taxonomy_term')
       ->accessCheck(FALSE)
-      ->condition('vid', $vocabulary)
+      ->condition('vid', $vocabulary_id)
       ->condition('name', $name)
       ->execute();
 
     if (empty($existing_tids)) {
       $term = Term::create([
         'name' => $name,
-        'vid' => $vocabulary,
+        'vid' => $vocabulary_id,
       ]);
       $term->save();
       $tid = $term->id();
@@ -52,3 +91,4 @@ function ubc_cwl_auth_install() {
   $access_storage->addTermPermissionsByRoleIds(['administrator'], $term_ids['CWL']);
 
 }
+

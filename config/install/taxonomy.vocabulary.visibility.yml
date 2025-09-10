@@ -1,8 +1,0 @@
-langcode: en
-status: true
-dependencies: {  }
-name: Visibility
-vid: visibility
-description: 'Tag content as either CWL only or general access'
-weight: 0
-new_revision: false
