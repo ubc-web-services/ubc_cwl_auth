@@ -1,7 +1,0 @@
-ubc_cwl_auth.ubc_cwl_redirect:
-  path: '/custom-403'
-  defaults:
-    _controller: '\Drupal\ubc_cwl_auth\Controller\AccessDeniedController::redirectToCwlLogin'
-    _title: 'Redirecting...'
-  requirements:
-    _permission: 'access content'
