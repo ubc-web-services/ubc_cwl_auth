@@ -1,0 +1,9 @@
+#!/bin/bash
+
+## Description: Install Drupal and enable the module
+## Usage: install
+## Example: "ddev install"
+
+vendor/bin/drush site:install --yes
+vendor/bin/drush pm:enable ubc_cwl_auth --yes
+vendor/bin/drush user:password admin admin --yes
