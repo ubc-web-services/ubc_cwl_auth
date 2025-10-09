@@ -1,0 +1,61 @@
+{
+  "name": "ubc_cwl_auth",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ubc-web-services/ubc_cwl_auth.git"
+  },
+  "keywords": [
+    "clf",
+    "ubc",
+    "kraken"
+  ],
+  "author": "UBC Web Services",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ubc-web-services/ubc_cwl_auth/issues"
+  },
+  "homepage": "https://github.com/ubc-web-services/ubc_cwl_auth#readme",
+  "engines": {
+    "node": ">= 18"
+  },
+  "scripts": {
+    "watch": "NODE_ENV=production postcss ./src/css/*.css -d ./css --ext min.css -w",
+    "css": "TAILWIND_MODE=build NODE_ENV=production postcss ./src/css/*.css -d  ./css --ext min.css",
+    "js": "webpack --config webpack.dev.js && webpack --config webpack.prod.js",
+    "prod": "TAILWIND_MODE=build NODE_ENV=production postcss ./src/css/*.css -d ./css --ext min.css && webpack --config webpack.prod.js",
+    "test:visual": "playwright test",
+    "test:visual:ui": "playwright test --ui",
+    "test:visual:report": "playwright show-report",
+    "test:visual:clean": "rm -rf test-results/ && rm -rf playwright-report/"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.2",
+    "dotenv": "^17.2.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@popperjs/core": "^2.11.8",
+    "@types/node": "^24.7.0",
+    "autoprefixer": "^10.4.16",
+    "cssnano": "^6.0.1",
+    "eslint": "^8.51.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^5.0.1",
+    "playwright": "^1.55.1",
+    "postcss": "^8.4.21",
+    "postcss-cli": "^11.0.1",
+    "postcss-import": "^15.1.0",
+    "postcss-prefix-selector": "^1.16.0",
+    "tailwindcss": "^3.4.17",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-merge": "^5.10.0"
+  },
+  "browserslist": [
+    "defaults"
+  ]
+}
