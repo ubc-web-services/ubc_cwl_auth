@@ -34,12 +34,42 @@ class SettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('UBC CWL Debug Mode'),
       '#default_value' => $config->get('ubc_cwl_auth_debug'),
-      '#description' => $this->t('Turn on debug mode'),
+      '#description' => $this->t('Turn on debug mode. Log SAML responses.'),
       '#return_value' => 1,
     ];
 
+    $form['attr1'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Attribute 1'),
+      '#default_value' => $config->get('ubc_cwl_auth_attr1'),
+    ];
+
+    $form['attr2'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Attribute 2'),
+      '#default_value' => $config->get('ubc_cwl_auth_attr2'),
+    ];
+
+    $form['attr3'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Attribute 3'),
+      '#default_value' => $config->get('ubc_cwl_auth_attr3'),
+    ];
+
+    $form['attr4'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Attribute 4'),
+      '#default_value' => $config->get('ubc_cwl_auth_attr4'),
+    ];
+
+    $form['attr5'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Attribute 5'),
+      '#default_value' => $config->get('ubc_cwl_auth_attr5'),
+    ];
+
     $form['attributes'] = [
-      '#markup' => $this->getDebugAttributes(),
+      '#markup' => $this->getDebugAttributes($config),
     ];
 
     return parent::buildForm($form, $form_state);
@@ -51,6 +81,11 @@ class SettingsForm extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->config('ubc_cwl_auth.settings')
       ->set('ubc_cwl_auth_debug', $form_state->getValue('debug'))
+      ->set('ubc_cwl_auth_attr1', $form_state->getValue('attr1'))
+      ->set('ubc_cwl_auth_attr2', $form_state->getValue('attr2'))
+      ->set('ubc_cwl_auth_attr3', $form_state->getValue('attr3'))
+      ->set('ubc_cwl_auth_attr4', $form_state->getValue('attr4'))
+      ->set('ubc_cwl_auth_attr5', $form_state->getValue('attr5'))
       ->save();
 
     \Drupal::logger('ubc_cwl_auth')->notice('UBC_CWL_AUTH Debug Setting: '.$form_state->getValue('debug'));
@@ -58,11 +93,32 @@ class SettingsForm extends ConfigFormBase {
     parent::submitForm($form, $form_state);
   }
 
-  private function getDebugAttributes() {
+  /**
+   * Fetch rows from the cache_ubc_cwl_auth table and display
+   */
+  private function getDebugAttributes($config) {
 
-    //\Drupal::logger('samlauth')->debug('Test SAML debug message from test');
+    if($config->get('ubc_cwl_auth_debug') != 1) {
+      return '';
+    }
 
-    return '<p>TODO: fetch data from Cache</p>';
+    $database = \Drupal::database();
+    $query = $database->select('cache_ubc_cwl_auth', 'c')
+      ->fields('c', ['cid', 'data']);
+    $result = $query->execute()->fetchAll();
+
+    $table = '<table><thead><tr><th>CID</th><th>DATA</th></tr></thead>';
+    foreach ($result as $item) {
+      $cid = $item->cid;
+      $data = json_decode($item->data);
+      $data = (array)$data;
+
+      $table .= '<tr><td>'.$cid.'</td><td>'.print_r($data, true).'</td></tr>';
+    }
+    $table .= '</table>';
+
+    return $table;
   }
+
 
 }

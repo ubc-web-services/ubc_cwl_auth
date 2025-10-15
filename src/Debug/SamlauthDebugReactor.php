@@ -3,6 +3,8 @@
 namespace Drupal\ubc_cwl_auth\Debug;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use DOMDocument;
+use DOMXPath;
 
 /**
  * Reactor service — keep this light; push heavy work to queue/worker.
@@ -28,19 +30,60 @@ class SamlauthDebugReactor {
    * @param array $context
    */
   public function handleDebugMessage(string $message, array $context = []) : void {
-    // Obtain the logger at runtime to avoid container circular references.
-    $logger = \Drupal::logger('ubc_cwl_auth');
 
-    if (strpos($message, 'SAML') !== FALSE || TRUE) {
+    $config = $this->configFactory->get('ubc_cwl_auth.settings');
+    if($config->get('ubc_cwl_auth_debug') == 1) {
 
-      $config = $this->configFactory->get('ubc_cwl_auth.settings');
+      if (strpos($message, 'ACS received SAML response') !== FALSE || TRUE) {
 
-      if($config->get('ubc_cwl_auth_debug') == 1) {
+        $attributes = $this->extractAttributes($context['@message'], $config);
+        $data = json_encode($attributes);
 
         $cid = time();
-        \Drupal::cache('ubc_cwl_auth')->set($cid, $message, (time() + 24*60*60));
+        \Drupal::cache('ubc_cwl_auth')->set($cid, $data, (time() + 24*60*60));
       }
-
     }
   }
+
+  private function extractAttributes($xml, $config) {
+
+    // Load XML into DOM
+    $doc = new DOMDocument();
+    $doc->loadXML($xml);
+
+    // Create XPath with namespaces
+    $xpath = new DOMXPath($doc);
+    $xpath->registerNamespace('saml2', 'urn:oasis:names:tc:SAML:2.0:assertion');
+
+    // The attributes we care about
+    $targetAttrs = [$config->get('ubc_cwl_auth_attr1'),
+                    $config->get('ubc_cwl_auth_attr2'),
+                    $config->get('ubc_cwl_auth_attr3'),
+                    $config->get('ubc_cwl_auth_attr4'),
+                    $config->get('ubc_cwl_auth_attr5')];
+    $targetAttrs = array_filter($targetAttrs);
+
+    $results = [];
+
+    // Loop through each target attribute
+    foreach ($targetAttrs as $attrName) {
+        $query = "//saml2:Attribute[@FriendlyName='$attrName']/saml2:AttributeValue";
+        $values = [];
+        foreach ($xpath->query($query) as $node) {
+            $values[] = trim($node->textContent);
+        }
+        // If multiple values (like eduPersonAffiliation), join with comma
+        if ($values) {
+            $results[$attrName] = implode(', ', $values);
+        }
+    }
+
+    // Print the results
+    $return = [];
+    foreach ($results as $key => $value) {
+        $return[$key] = $value;
+    }
+    return $return;
+  }
+
 }
