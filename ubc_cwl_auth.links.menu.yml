@@ -1,0 +1,5 @@
+ubc_cwl_auth.settings:
+  title: 'UBC CWL Auth Settings'
+  description: 'Configure settings for UBC CWL Auth.'
+  route_name: ubc_cwl_auth.settings
+  parent: system.admin_config_system

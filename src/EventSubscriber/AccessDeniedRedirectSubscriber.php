@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Drupal\Core\Routing\UrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
 
 class AccessDeniedRedirectSubscriber implements EventSubscriberInterface {
 
@@ -42,10 +43,16 @@ class AccessDeniedRedirectSubscriber implements EventSubscriberInterface {
       return;
     }
 
+
     // Redirect other users to CWL Login
-    //\Drupal::logger('UBC CWL')->debug('No CWL role... redirect');
-    $url = $this->urlGenerator->generate('ubc_cwl_auth.ubc_cwl_redirect');
-    $response = new RedirectResponse($url);
+    $request = $event->getRequest();
+    $source_page = $request->getRequestUri();
+
+    $redirect_url = Url::fromUri('internal:/saml/login', [
+      'query' => ['destination' => $source_page],
+    ])->toString();
+
+    $response = new RedirectResponse($redirect_url);
     $event->setResponse($response);
   }
 
