@@ -15,6 +15,7 @@ module.exports = defineConfig({
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    ignoreHTTPSErrors: true, // to bypass ERR_CERT_AUTHORITY_INVALID
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: process.env.BASE_URL || 'https://ubc-cwl-auth.ddev.site',
 
