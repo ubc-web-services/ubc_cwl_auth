@@ -1,0 +1,46 @@
+name: Playwright Tests
+on:
+#   pull_request:
+#     branches: [ main, master ]
+    push:
+        branches: [ playwright ]
+jobs:
+  test:
+    timeout-minutes: 60 
+    runs-on: ubuntu-latest 
+    steps:
+    - uses: actions/checkout@v5 
+    - uses: actions/setup-node@v5 
+      with:
+        node-version: lts/*
+    - name: Install dependencies 
+      run: npm ci 
+    - name: Install Playwright Browsers
+      run: npx playwright install chromium --with-deps 
+    - name: Setup DDEV
+      uses: ddev/github-action-setup-ddev@v1
+    - name: Start DDEV
+      run: ddev start
+    - name: Install composer dependencies
+      run: ddev poser
+    - name: Symlink the theme into the web/themes/custom directory
+      run: ddev symlink-project
+    - name: Install Drupal and set the theme
+      run: ddev install
+    - name: Get DDEV URL
+      id: ddev_url
+      run: |
+        URL=$(ddev describe -j | jq -r .raw.services.web.https_url)
+        echo "BASE_URL=$URL" >> $GITHUB_ENV
+    - name: Run Playwright tests
+      run: npx playwright test tests/unitTesting
+      env:
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+        baseURL: ${{ env.BASE_URL }}
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30

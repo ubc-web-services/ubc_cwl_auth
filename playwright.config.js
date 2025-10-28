@@ -11,12 +11,12 @@ module.exports = defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ['html'],
-    ['json', { outputFile: 'test-results/results.json' }]
+    ['github']
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'https://ubc-cwl-auth.ddev.site:33011',
+    baseURL: process.env.BASE_URL || 'https://ubc-cwl-auth.ddev.site',
 
     /* Take screenshot on failure */
     screenshot: 'only-on-failure',
