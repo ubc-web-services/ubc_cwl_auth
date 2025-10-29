@@ -15,5 +15,11 @@
   "require-dev": {
       "drupal/coder": "^8.3.16",
       "drush/drush": "^13.3"
+  },
+  "config": {
+      "allow-plugins": {
+        "php-http/discovery": true,
+        "tbachert/spi": false
+      }
   }
 }
