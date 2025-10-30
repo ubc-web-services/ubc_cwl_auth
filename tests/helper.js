@@ -44,7 +44,7 @@ export async function createGeneralPage(page, generalpageURL, titleMessage, body
 
   // Check General Visibility
   const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-0-target-id"]');
-  await visibilityInput.waitFor({ state: 'visible', timeout: 10000});
+  await visibilityInput.click();
   await visibilityInput.fill('General');
   // await page.fill('[data-drupal-selector="edit-field-visibility-0-target-id"]', 'General');
 
@@ -80,7 +80,7 @@ export async function createCWLPage(page, cwlpageURL, titleMessage, bodyMessage)
   // Check General Visibility
   // await page.fill('[data-drupal-selector="edit-field-visibility-0-target-id"]', 'CWL');
   const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-0-target-id"]');
-  await visibilityInput.waitFor({ state: 'visible', timeout: 10000});
+  await visibilityInput.click();
   await visibilityInput.fill('CWL');
 
   const suggestion = page.locator('.ui-autocomplete li', { hasText: 'CWL' });
