@@ -33,7 +33,7 @@ jobs:
         URL=$(ddev describe -j | jq -r .raw.services.web.https_url)
         echo "BASE_URL=$URL" >> $GITHUB_ENV
     - name: Run Playwright tests
-      run: npx playwright test --workers=2
+      run: npx playwright test --workers=1
       env:
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
