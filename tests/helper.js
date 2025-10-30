@@ -43,7 +43,7 @@ export async function createGeneralPage(page, generalpageURL, titleMessage, body
   await page.keyboard.type(bodyMessage, { delay: 0 });
 
   // Check General Visibility
-  await page.fill('[data-drupal-selector="edit-field-visibility-0-target-id"]', 'General');
+  // await page.fill('[data-drupal-selector="edit-field-visibility-0-target-id"]', 'General');
 
   // Add menu
   await page.locator('[data-drupal-selector="edit-menu"]').first().locator('summary').click();
