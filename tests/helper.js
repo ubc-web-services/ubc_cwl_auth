@@ -42,8 +42,29 @@ export async function createGeneralPage(page, generalpageURL, titleMessage, body
   await ckEditor.click();
   await page.keyboard.type(bodyMessage, { delay: 0 });
 
+  // Wait for the field to be attached to the DOM
+  await page.waitForSelector('[data-drupal-selector="edit-field-visibility-0-target-id"]', {
+    state: 'attached',
+    timeout: 20000,
+  });
+
+  // Wait for Drupal's autocomplete behavior to finish initializing
+  await page.waitForFunction(() => {
+    const input = document.querySelector('[data-drupal-selector="edit-field-visibility-0-target-id"]');
+    const message = document.querySelector('[data-drupal-selector="autocomplete-message"]');
+    // Ready when input exists, is visible, and loading message (if any) is hidden
+    return (
+      input &&
+      input.offsetParent !== null &&
+      (!message || message.classList.contains('hidden'))
+    );
+  }, { timeout: 15000 });
+
   // Check General Visibility
-  const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
+  // const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
+  // await visibilityInput.waitFor({ state: 'visible', timeout: 10000 });
+  // Verify the field is visible and editable
+  const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-0-target-id"]');
   await visibilityInput.fill('General');
 
   // Add menu
@@ -77,6 +98,7 @@ export async function createCWLPage(page, cwlpageURL, titleMessage, bodyMessage)
 
   // Check General Visibility
   const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
+  await visibilityInput.waitFor({ state: 'visible', timeout: 10000 });
   await visibilityInput.fill('CWL');
 
   // Add menu
