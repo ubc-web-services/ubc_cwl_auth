@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import util from 'util';
-// import dotenv from 'dotenv';
-// dotenv.config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const execAsync = util.promisify(exec);
 
@@ -46,8 +46,8 @@ export async function createGeneralPage(page, generalpageURL, titleMessage, body
   // const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
   // await visibilityInput.waitFor({ state: 'visible', timeout: 10000 });
   // Verify the field is visible and editable
-  const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-0-target-id"]');
-  await visibilityInput.fill('1');
+  const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility"]');
+  await visibilityInput.selectOption({label: 'General'});
 
   // Add menu
   await page.locator('[data-drupal-selector="edit-menu"]').first().locator('summary').click();
@@ -79,9 +79,8 @@ export async function createCWLPage(page, cwlpageURL, titleMessage, bodyMessage)
   await page.keyboard.type(bodyMessage, { delay: 0 });
 
   // Check General Visibility
-  const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
-  // await visibilityInput.waitFor({ state: 'visible', timeout: 50000 });
-  await visibilityInput.fill('2');
+  const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility"]');
+  await visibilityInput.selectOption({label: 'CWL'});
 
   // Add menu
   await page.locator('[data-drupal-selector="edit-menu"]').first().locator('summary').click();

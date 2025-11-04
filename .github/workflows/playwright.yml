@@ -32,6 +32,8 @@ jobs:
       run: |
         URL=$(ddev describe -j | jq -r .raw.services.web.https_url)
         echo "BASE_URL=$URL" >> $GITHUB_ENV
+    - name: Run drush command
+      run: ddev drush config-set core.entity_form_display.node.page.default content.field_visibility.type options_select -y
     - name: Run Playwright tests
       run: npx playwright test
       env:
