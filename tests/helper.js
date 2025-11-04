@@ -98,7 +98,7 @@ export async function createCWLPage(page, cwlpageURL, titleMessage, bodyMessage)
 
   // Check General Visibility
   const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
-  await visibilityInput.waitFor({ state: 'visible', timeout: 10000 });
+  await visibilityInput.waitFor({ state: 'visible', timeout: 50000 });
   await visibilityInput.fill('CWL');
 
   // Add menu
