@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 import util from 'util';
-import dotenv from 'dotenv';
-dotenv.config();
+// import dotenv from 'dotenv';
+// dotenv.config();
 
 const execAsync = util.promisify(exec);
 
