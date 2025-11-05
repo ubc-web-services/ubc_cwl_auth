@@ -2,6 +2,10 @@
 
 use Drupal\taxonomy\Entity\Term;
 use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
 
 /**
  * Implements hook_install().
@@ -9,6 +13,7 @@ use Drupal\taxonomy\Entity\Vocabulary;
 function ubc_cwl_auth_install() {
   ubc_cwl_auth_createCwlRole();
   ubc_cwl_auth_createVisibilityTaxonomy();
+  ubc_cwl_auth_createVisibilityField();
 }
 
 function ubc_cwl_auth_createCwlRole() {
@@ -92,3 +97,67 @@ function ubc_cwl_auth_createVisibilityTaxonomy() {
 
 }
 
+function ubc_cwl_auth_createVisibilityField() {
+  $entity_type = 'node';
+  $bundle = 'page';
+  $field_name = 'field_visibility';
+  $vocabulary = 'visibility';
+
+  if (!FieldStorageConfig::loadByName($entity_type, $field_name)) {
+    FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => $entity_type,
+      'type' => 'entity_reference',
+      'cardinality' => 1,
+      'settings' => [
+        'target_type' => 'taxonomy_term',
+      ],
+      'translatable' => TRUE,
+    ])->save();
+    \Drupal::logger('field_setup')->info('Created field storage for @field.', ['@field' => $field_name]);
+  }
+
+  if (!FieldConfig::loadByName($entity_type, $bundle, $field_name)) {
+    FieldConfig::create([
+      'entity_type' => $entity_type,
+      'bundle' => $bundle,
+      'field_name' => $field_name,
+      'label' => 'Visibility',
+      'description' => 'Select visibility level for this page.',
+      'required' => TRUE,
+      'settings' => [
+        'handler' => 'default:taxonomy_term',
+        'handler_settings' => [
+          'target_bundles' => [
+            $vocabulary => $vocabulary,
+          ],
+          'auto_create' => FALSE,
+        ],
+      ],
+      'required' => FALSE,
+    ])->save();
+    \Drupal::logger('field_setup')->info('Created field instance for @field on @bundle.', ['@field' => $field_name, '@bundle' => $bundle]);
+  }
+
+  $form_display = \Drupal::entityTypeManager()->getStorage('entity_form_display')->load("{$entity_type}.{$bundle}.default");
+  if ($form_display) {
+    $form_display->setComponent($field_name, [
+      'type' => 'options_select',
+      'weight' => 122,
+      'region' => 'content',
+    ])->save();
+  }
+
+  $view_display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load("{$entity_type}.{$bundle}.default");
+  if ($view_display) {
+    $view_display->setComponent($field_name, [
+      'type' => 'entity_reference_label',
+      'label' => 'above',
+    ])->save();
+  }
+
+  \Drupal::logger('field_setup')->info('Field @field successfully created for content type @bundle.', [
+    '@field' => $field_name,
+    '@bundle' => $bundle,
+  ]);
+}
