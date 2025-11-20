@@ -43,8 +43,6 @@ export async function createGeneralPage(page, generalpageURL, titleMessage, body
   await page.keyboard.type(bodyMessage, { delay: 0 });
 
   // Check General Visibility
-  // const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility-wrapper"] input');
-  // await visibilityInput.waitFor({ state: 'visible', timeout: 10000 });
   // Verify the field is visible and editable
   const visibilityInput = page.locator('[data-drupal-selector="edit-field-visibility"]');
   await visibilityInput.selectOption({label: 'General'});
