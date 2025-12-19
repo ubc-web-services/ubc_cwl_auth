@@ -1,0 +1,6 @@
+# ubc_cwl_auth.libraries.yml
+
+ubc_cwl_auth:
+  css:
+    theme:
+      css/ubc_cwl_auth.css: { }

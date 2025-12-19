@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function ubc_cwl_auth_theme($existing, $type, $theme, $path) {
+    return [
+        'cwl_template' => [
+            'variables' => [
+                'cwl_role' => NULL,
+                'cwl_name' => NULL
+            ],
+            'template' => 'block--cwl-template',
+        ],
+    ];
+}
