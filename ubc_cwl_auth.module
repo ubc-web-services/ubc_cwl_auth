@@ -1,5 +1,7 @@
 <?php
 
+use Drupal\Core\Form\FormStateInterface;
+
 /**
  * Implements hook_theme().
  */
@@ -13,4 +15,19 @@ function ubc_cwl_auth_theme($existing, $type, $theme, $path) {
             'template' => 'block--cwl-template',
         ],
     ];
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for search_form.
+ *
+ * Styles the CWL button on the login form
+ */
+function ubc_cwl_auth_form_user_login_form_alter(&$form, FormStateInterface $form_state, $form_id)
+{
+    if (isset($form['samlauth_auth_login_link'])) {
+        $form['samlauth_auth_login_link']['#options']['attributes']['class'] = 'button button--primary';
+        $form['samlauth_auth_login_link']['#options']['attributes']['style'] = 'margin-bottom: 1.5rem';
+        $form['samlauth_auth_login_link']['#weight'] = -10;
+        $form['samlauth_auth_login_link']['#suffix'] = '<h2>Drupal user log in</h2>';
+    }
 }
