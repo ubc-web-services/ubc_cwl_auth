@@ -1,0 +1,7 @@
+ubc_cwl_auth.settings:
+  path: '/admin/config/system/ubc_cwl_auth'
+  defaults:
+    _form: '\Drupal\ubc_cwl_auth\Form\SettingsForm'
+    _title: 'UBC CWL Auth Settings'
+  requirements:
+    _permission: 'administer site configuration'

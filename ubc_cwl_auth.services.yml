@@ -6,3 +6,22 @@ services:
       - '@current_user'
     tags:
       - { name: event_subscriber }
+
+  ubc_cwl_auth.logger_factory_decorator:
+    class: Drupal\ubc_cwl_auth\Logger\FactoryDecorator
+    decorates: 'logger.factory'
+    arguments: ['@ubc_cwl_auth.logger_factory_decorator.inner', '@ubc_cwl_auth.samlauth_debug_reactor']
+    public: false
+
+  ubc_cwl_auth.samlauth_debug_reactor:
+    class: Drupal\ubc_cwl_auth\Debug\SamlauthDebugReactor
+    arguments:
+      - '@config.factory'
+    public: false
+
+  cache.ubc_cwl_auth:
+    class: Drupal\Core\Cache\CacheBackendInterface
+    tags:
+      - { name: cache.bin }
+    factory: cache_factory:get
+    arguments: ['ubc_cwl_auth']

@@ -1,0 +1,11 @@
+{% set hascwlrole = cwl_role %}
+{% if hascwlrole is not empty %}
+{{ attach_library('ubc_cwl_auth/ubc_cwl_auth') }}
+<div aria-label="status-message" role="status" aria-live="polite" class="bg-ubc-blue-polar cwl-status">
+  <div class="container px-4 py-2 mx-auto text-xs text-right">
+    <p class="mt-0">Logged in as {{ cwl_name }} <span class="inline-block px-4">|</span>
+      <a href="/user/logout">Logout</a>
+    </p>
+  </div>
+</div>
+{% endif %}
