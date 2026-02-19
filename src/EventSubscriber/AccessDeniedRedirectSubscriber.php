@@ -37,9 +37,8 @@ class AccessDeniedRedirectSubscriber implements EventSubscriberInterface {
       return;
     }
 
-    // If the user has the 'CWL' role, let the default 403 page load.
-    if (in_array('CWL', $this->currentUser->getRoles(), TRUE)) {
-      //\Drupal::logger('UBC CWL')->debug('has CWL');
+    // If already authenticated → show 403.
+    if ($this->currentUser->isAuthenticated()) {
       return;
     }
 
