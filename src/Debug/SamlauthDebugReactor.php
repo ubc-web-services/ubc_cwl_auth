@@ -36,8 +36,13 @@ class SamlauthDebugReactor {
 
       if (strpos($message, 'ACS received SAML response') !== FALSE || TRUE) {
 
-        $attributes = $this->extractAttributes($context['@message'], $config);
-        $data = json_encode($attributes);
+        if(isset($context['@message'])) {
+          $attributes = $this->extractAttributes($context['@message'], $config);
+          $data = json_encode($attributes);
+        }
+        else {
+          $data = json_encode(['data' => 'false']);
+        }
 
         $cid = time();
         \Drupal::cache('ubc_cwl_auth')->set($cid, $data, (time() + 24*60*60));
