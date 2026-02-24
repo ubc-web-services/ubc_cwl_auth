@@ -36,7 +36,7 @@ class SamlauthDebugReactor {
 
       if (strpos($message, 'ACS received SAML response') !== FALSE || TRUE) {
 
-        if(isset($context['@message'])) {
+        if(!empty($context['@message'])) {
           $attributes = $this->extractAttributes($context['@message'], $config);
           $data = json_encode($attributes);
         }
