@@ -11,6 +11,8 @@ use Drupal\Core\Routing\UrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
+
 
 class AccessDeniedRedirectSubscriber implements EventSubscriberInterface {
 
@@ -42,6 +44,11 @@ class AccessDeniedRedirectSubscriber implements EventSubscriberInterface {
       return;
     }
 
+    // Don't redirect anonymous users when the request is for an unpublished node
+    $node = $event->getRequest()->attributes->get('node');
+    if ($node instanceof NodeInterface && !$node->isPublished()) {
+      return;
+    }
 
     // Redirect other users to CWL Login
     $request = $event->getRequest();
