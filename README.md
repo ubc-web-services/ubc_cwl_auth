@@ -32,6 +32,13 @@ The functionality provided by this module is to subscribe to 403 events, and red
 **jsonapi_extras** - Not actually a dependency, but required to see JSON endpoints, for testing access control of content exposed through endpoints.
 
 
+### Additional Modules
+
+**field_defaults** - When you merge the Visibility field to a new environment, use field_defaults to set the default value on the existing nodes.
+
+**menu_item_role_access** - For menu links to CWL protected content to appear for Anon users.
+
+
 ### Configuration of Uses Cases
 
 
